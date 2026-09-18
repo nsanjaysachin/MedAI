@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    match /users/{userId} {
+      allow get, update, create, delete: if isOwner(userId);
+      allow list: if isAuthenticated() && request.auth.uid == userId;
+
+      match /documents/{documentId} {
+        allow get, list, create, update, delete: if isOwner(userId) && isValidId(documentId);
+      }
+
+      match /timeline_events/{eventId} {
+        allow get, list, create, update, delete: if isOwner(userId) && isValidId(eventId);
+      }
+
+      match /doctor_questions/{questionId} {
+        allow get, list, create, update, delete: if isOwner(userId) && isValidId(questionId);
+      }
+
+      match /medications/{medicationId} {
+        allow get, list, create, update, delete: if isOwner(userId) && isValidId(medicationId);
+      }
+
+      match /chat_sessions/{sessionId} {
+        allow get, list, create, update, delete: if isOwner(userId) && isValidId(sessionId);
+      }
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

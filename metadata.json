@@ -1,0 +1,6 @@
+{
+  "name": "MEDAI - Medical Report Assistant",
+  "description": "AI-powered medical report assistant that translates complex lab results, documents, and medical terminology into simple, structured explanations, tracks trends over time, and prepares questions for your doctor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
